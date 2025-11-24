@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radiation Protection Flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f9fafb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .card-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 50px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .card-inner {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .card-front, .card-back {
+            display: none;
+        }
+        
+        .card-front.active, .card-back.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-front.active {
+            background: #F5A201;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .card-back.active {
+            background: #013C58;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .card-back.active .full-form {
+            color: #ffffff;
+        }
+        
+        .label {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            margin-bottom: 20px;
+        }
+        
+        .acronym {
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: #1f2937;
+        }
+        
+        .full-form {
+            font-size: 1.75rem;
+            text-align: center;
+            color: #1f2937;
+            line-height: 1.6;
+            padding: 0 20px;
+        }
+        
+        .hint {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            margin-top: 40px;
+        }
+        
+        .progress-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .utility-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .utility-controls button {
+            font-size: 0.875rem;
+            padding: 10px;
+        }
+        
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .acronym {
+                font-size: 2.5rem;
+            }
+            
+            .full-form {
+                font-size: 1.25rem;
+            }
+            
+            .card-container {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Radiation Protection Acronyms</h1>
+            <p class="subtitle">200 essential terms for radiation safety professionals</p>
+        </div>
+        
+        <div class="card-container" onclick="flipCard()">
+            <div class="card-inner">
+                <div class="card-front active">
+                    <p class="label">What does this stand for?</p>
+                    <p class="acronym" id="acronym">ALARA</p>
+                    <p class="hint">Click to reveal</p>
+                </div>
+                <div class="card-back">
+                    <p class="full-form" id="fullForm">As Low As Reasonably Achievable</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-info">
+                <span id="cardCounter">Card 1 of 200</span>
+                <span id="viewedCounter">1 viewed</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0.5%"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn-secondary" onclick="previousCard(); event.stopPropagation();" id="prevBtn">← Previous</button>
+            <button class="btn-primary" onclick="nextCard(); event.stopPropagation();" id="nextBtn">Next →</button>
+        </div>
+        
+        <div class="utility-controls">
+            <button class="btn-secondary" onclick="shuffleCards(); event.stopPropagation();">🔀 Shuffle</button>
+            <button class="btn-secondary" onclick="resetCards(); event.stopPropagation();">↻ Reset</button>
+        </div>
+    </div>
+
+    <script>
+        const flashcardsData = [
+            { acronym: "ALARA", fullForm: "As Low As Reasonably Achievable" },
+            { acronym: "IAEA", fullForm: "International Atomic Energy Agency" },
+            { acronym: "ICRP", fullForm: "International Commission on Radiological Protection" },
+            { acronym: "ARPANSA", fullForm: "Australian Radiation Protection and Nuclear Safety Agency" },
+            { acronym: "RPS", fullForm: "Radiation Protection Series" },
+            { acronym: "Bq", fullForm: "Becquerel" },
+            { acronym: "Sv", fullForm: "Sievert" },
+            { acronym: "mSv", fullForm: "Millisievert" },
+            { acronym: "µSv", fullForm: "Microsievert" },
+            { acronym: "Gy", fullForm: "Gray" },
+            { acronym: "mGy", fullForm: "Milligray" },
+            { acronym: "NORM", fullForm: "Naturally Occurring Radioactive Material" },
+            { acronym: "TENORM", fullForm: "Technologically Enhanced Naturally Occurring Radioactive Material" },
+            { acronym: "RPO", fullForm: "Radiation Protection Officer" },
+            { acronym: "RSO", fullForm: "Radiation Safety Officer" },
+            { acronym: "RPA", fullForm: "Radiation Protection Advisor" },
+            { acronym: "QA", fullForm: "Quality Assurance" },
+            { acronym: "QC", fullForm: "Quality Control" },
+            { acronym: "HEPA", fullForm: "High Efficiency Particulate Air" },
+            { acronym: "PPE", fullForm: "Personal Protective Equipment" },
+            { acronym: "RADI", fullForm: "Radiation Detection Instrument" },
+            { acronym: "RPM", fullForm: "Radiation Portal Monitor" },
+            { acronym: "GM", fullForm: "Geiger-Müller" },
+            { acronym: "HPGe", fullForm: "High Purity Germanium" },
+            { acronym: "LAA", fullForm: "Local Area Alarm" },
+            { acronym: "TLD", fullForm: "Thermoluminescent Dosimeter" },
+            { acronym: "OSL", fullForm: "Optically Stimulated Luminescence Dosimeter" },
+            { acronym: "LDR", fullForm: "Low Dose Rate" },
+            { acronym: "HDR", fullForm: "High Dose Rate" },
+            { acronym: "EPA SA", fullForm: "South Australian Environment Protection Authority" },
+            { acronym: "EAL", fullForm: "Emergency Action Level" },
+            { acronym: "EPR", fullForm: "Emergency Preparedness and Response" },
+            { acronym: "ICS", fullForm: "Incident Command System" },
+            { acronym: "OHS", fullForm: "Occupational Health and Safety" },
+            { acronym: "RPE", fullForm: "Respiratory Protective Equipment" },
+            { acronym: "CEC", fullForm: "Committed Effective Dose" },
+            { acronym: "SAD", fullForm: "Source Activity Determination" },
+            { acronym: "DRL", fullForm: "Diagnostic Reference Level" },
+            { acronym: "LINAC", fullForm: "Linear Accelerator" },
+            { acronym: "CT", fullForm: "Computed Tomography" },
+            { acronym: "PET", fullForm: "Positron Emission Tomography" },
+            { acronym: "MRI", fullForm: "Magnetic Resonance Imaging (non-ionising)" },
+            { acronym: "UNSCEAR", fullForm: "United Nations Scientific Committee on the Effects of Atomic Radiation" },
+            { acronym: "WHO", fullForm: "World Health Organization" },
+            { acronym: "ICRU", fullForm: "International Commission on Radiation Units and Measurements" },
+            { acronym: "OECD-NEA", fullForm: "OECD Nuclear Energy Agency" },
+            { acronym: "ANSTO", fullForm: "Australian Nuclear Science and Technology Organisation" },
+            { acronym: "ALARP", fullForm: "As Low As Reasonably Practicable" },
+            { acronym: "LNT", fullForm: "Linear No-Threshold (model)" },
+            { acronym: "EDE", fullForm: "Effective Dose Equivalent" },
+            { acronym: "TEDE", fullForm: "Total Effective Dose Equivalent" },
+            { acronym: "CEDE", fullForm: "Committed Effective Dose Equivalent" },
+            { acronym: "DAP", fullForm: "Dose Area Product" },
+            { acronym: "KAP", fullForm: "Kerma Area Product" },
+            { acronym: "DLP", fullForm: "Dose Length Product" },
+            { acronym: "CTDIvol", fullForm: "Volume Computed Tomography Dose Index" },
+            { acronym: "MPE", fullForm: "Medical Physics Expert" },
+            { acronym: "MDA", fullForm: "Minimum Detectable Activity" },
+            { acronym: "LLD", fullForm: "Lower Limit of Detection" },
+            { acronym: "LLW", fullForm: "Low Level Waste" },
+            { acronym: "ILW", fullForm: "Intermediate Level Waste" },
+            { acronym: "HLW", fullForm: "High Level Waste" },
+            { acronym: "VLLW", fullForm: "Very Low Level Waste" },
+            { acronym: "LILW", fullForm: "Low and Intermediate Level Waste" },
+            { acronym: "WAC", fullForm: "Waste Acceptance Criteria" },
+            { acronym: "DSRS", fullForm: "Disused Sealed Radioactive Source" },
+            { acronym: "LSA", fullForm: "Low Specific Activity (material)" },
+            { acronym: "PAG", fullForm: "Protective Action Guide" },
+            { acronym: "RDD", fullForm: "Radiological Dispersal Device" },
+            { acronym: "IND", fullForm: "Improvised Nuclear Device" },
+            { acronym: "REMP", fullForm: "Radiological Environmental Monitoring Program" },
+            { acronym: "GSR", fullForm: "General Safety Requirements (IAEA)" },
+            { acronym: "SSR", fullForm: "Specific Safety Requirements (IAEA)" },
+            { acronym: "RS-G", fullForm: "Radiation Safety Guide (IAEA series)" },
+            { acronym: "NSC", fullForm: "Nuclear Safety Committee" },
+            { acronym: "NPP", fullForm: "Nuclear Power Plant" },
+            { acronym: "PWR", fullForm: "Pressurised Water Reactor" },
+            { acronym: "BWR", fullForm: "Boiling Water Reactor" },
+            { acronym: "CANDU", fullForm: "Canadian Deuterium Uranium Reactor" },
+            { acronym: "LWR", fullForm: "Light Water Reactor" },
+            { acronym: "OPAL", fullForm: "Open Pool Australian Lightwater Reactor" },
+            { acronym: "QA/QC", fullForm: "Quality Assurance / Quality Control" },
+            { acronym: "QMS", fullForm: "Quality Management System" },
+            { acronym: "H*(10)", fullForm: "Ambient Dose Equivalent at 10 mm depth" },
+            { acronym: "Hp(10)", fullForm: "Personal Dose Equivalent at 10 mm depth" },
+            { acronym: "Hp(0.07)", fullForm: "Personal Dose Equivalent at 0.07 mm depth" },
+            { acronym: "Hp(3)", fullForm: "Personal Dose Equivalent for the lens of the eye" },
+            { acronym: "HVL", fullForm: "Half-Value Layer" },
+            { acronym: "TVL", fullForm: "Tenth-Value Layer" },
+            { acronym: "IC", fullForm: "Ionisation Chamber" },
+            { acronym: "MCA", fullForm: "Multichannel Analyser" },
+            { acronym: "SCA", fullForm: "Single Channel Analyser" },
+            { acronym: "NaI(Tl)", fullForm: "Thallium-activated Sodium Iodide detector" },
+            { acronym: "LSC", fullForm: "Liquid Scintillation Counter" },
+            { acronym: "PIPS", fullForm: "Passivated Implanted Planar Silicon detector" },
+            { acronym: "BF3", fullForm: "Boron Trifluoride (neutron detector)" },
+            { acronym: "He-3", fullForm: "Helium-3 (neutron detector)" },
+            { acronym: "NAA", fullForm: "Neutron Activation Analysis" },
+            { acronym: "QMP", fullForm: "Qualified Medical Physicist" },
+            { acronym: "SPECT", fullForm: "Single Photon Emission Computed Tomography" },
+            { acronym: "NM", fullForm: "Nuclear Medicine" },
+            { acronym: "IGRT", fullForm: "Image-Guided Radiation Therapy" },
+            { acronym: "IMRT", fullForm: "Intensity-Modulated Radiation Therapy" },
+            { acronym: "VMAT", fullForm: "Volumetric Modulated Arc Therapy" },
+            { acronym: "OBI", fullForm: "On-Board Imager" },
+            { acronym: "CBCT", fullForm: "Cone Beam Computed Tomography" },
+            { acronym: "TPS", fullForm: "Treatment Planning System" },
+            { acronym: "PACS", fullForm: "Picture Archiving and Communication System" },
+            { acronym: "RIS", fullForm: "Radiology Information System" },
+            { acronym: "FOV", fullForm: "Field of View" },
+            { acronym: "FSD", fullForm: "Focus-to-Skin Distance" },
+            { acronym: "SSD", fullForm: "Source-to-Skin Distance" },
+            { acronym: "SID", fullForm: "Source-to-Image Distance" },
+            { acronym: "AEC", fullForm: "Automatic Exposure Control" },
+            { acronym: "FFD", fullForm: "Focus-to-Film Distance" },
+            { acronym: "DICOM", fullForm: "Digital Imaging and Communications in Medicine" },
+            { acronym: "LBD", fullForm: "Light Beam Diaphragm" },
+            { acronym: "DLT", fullForm: "Dead-time Losses (counting)" },
+            { acronym: "ROI", fullForm: "Region of Interest" },
+            { acronym: "OAR", fullForm: "Organ At Risk" },
+            { acronym: "CTV", fullForm: "Clinical Target Volume" },
+            { acronym: "PTV", fullForm: "Planning Target Volume" },
+            { acronym: "GTV", fullForm: "Gross Tumour Volume" },
+            { acronym: "RBE", fullForm: "Relative Biological Effectiveness" },
+            { acronym: "LET", fullForm: "Linear Energy Transfer" },
+            { acronym: "EPID", fullForm: "Electronic Portal Imaging Device" },
+            { acronym: "WLM", fullForm: "Working Level Month (radon exposure)" },
+            { acronym: "Rn-222", fullForm: "Radon-222" },
+            { acronym: "PAEC", fullForm: "Potential Alpha Energy Concentration" },
+            { acronym: "HP", fullForm: "Health Physics" },
+            { acronym: "HPA", fullForm: "Health Protection Agency (legacy UK)" },
+            { acronym: "CNSC", fullForm: "Canadian Nuclear Safety Commission" },
+            { acronym: "NRC", fullForm: "Nuclear Regulatory Commission (US)" },
+            { acronym: "DOE", fullForm: "Department of Energy (US)" },
+            { acronym: "EPA", fullForm: "Environmental Protection Agency (US)" },
+            { acronym: "FDA", fullForm: "Food and Drug Administration (US)" },
+            { acronym: "CDRH", fullForm: "Center for Devices and Radiological Health" },
+            { acronym: "REM", fullForm: "Roentgen Equivalent Man (non-SI unit)" },
+            { acronym: "mrem", fullForm: "Millirem" },
+            { acronym: "Ci", fullForm: "Curie" },
+            { acronym: "mCi", fullForm: "Millicurie" },
+            { acronym: "µCi", fullForm: "Microcurie" },
+            { acronym: "R", fullForm: "Roentgen" },
+            { acronym: "R/h", fullForm: "Roentgen per hour" },
+            { acronym: "H*(d)", fullForm: "Ambient Dose Equivalent at depth d" },
+            { acronym: "Hp(d)", fullForm: "Personal Dose Equivalent at depth d" },
+            { acronym: "E", fullForm: "Effective Dose" },
+            { acronym: "HT", fullForm: "Equivalent Dose in Tissue or Organ T" },
+            { acronym: "D", fullForm: "Absorbed Dose" },
+            { acronym: "Ka", fullForm: "Air Kerma" },
+            { acronym: "Ka,e", fullForm: "Entrance Surface Air Kerma" },
+            { acronym: "KAP meter", fullForm: "Kerma Area Product meter" },
+            { acronym: "QF", fullForm: "Quality Factor" },
+            { acronym: "ICRP 60", fullForm: "ICRP Publication 60 (1990 Recommendations)" },
+            { acronym: "ICRP 103", fullForm: "ICRP Publication 103 (2007 Recommendations)" },
+            { acronym: "BSS", fullForm: "Basic Safety Standards" },
+            { acronym: "OIL", fullForm: "Operational Intervention Level" },
+            { acronym: "RPLD", fullForm: "Radiophotoluminescent Dosimeter" },
+            { acronym: "EPD", fullForm: "Electronic Personal Dosimeter" },
+            { acronym: "APD", fullForm: "Active Personal Dosimeter" },
+            { acronym: "ALI", fullForm: "Annual Limit on Intake" },
+            { acronym: "DAC", fullForm: "Derived Air Concentration" },
+            { acronym: "DCF", fullForm: "Dose Conversion Factor" },
+            { acronym: "LSA-I", fullForm: "Low Specific Activity material I" },
+            { acronym: "LSA-II", fullForm: "Low Specific Activity material II" },
+            { acronym: "LSA-III", fullForm: "Low Specific Activity material III" },
+            { acronym: "IP-1", fullForm: "Industrial Package Type 1" },
+            { acronym: "IP-2", fullForm: "Industrial Package Type 2" },
+            { acronym: "IP-3", fullForm: "Industrial Package Type 3" },
+            { acronym: "Type A", fullForm: "Type A package" },
+            { acronym: "Type B(U)", fullForm: "Type B(U) package" },
+            { acronym: "Type B(M)", fullForm: "Type B(M) package" },
+            { acronym: "SSC", fullForm: "Structures, Systems and Components" },
+            { acronym: "SAR", fullForm: "Safety Analysis Report" },
+            { acronym: "PSA", fullForm: "Probabilistic Safety Assessment" },
+            { acronym: "DBA", fullForm: "Design Basis Accident" },
+            { acronym: "BDBA", fullForm: "Beyond Design Basis Accident" },
+            { acronym: "SBO", fullForm: "Station Blackout" },
+            { acronym: "LOCA", fullForm: "Loss of Coolant Accident" },
+            { acronym: "ECCS", fullForm: "Emergency Core Cooling System" },
+            { acronym: "SCRAM", fullForm: "Rapid reactor shutdown" },
+            { acronym: "RP", fullForm: "Radiation Protection" },
+            { acronym: "RPP", fullForm: "Radiation Protection Program" },
+            { acronym: "RCS", fullForm: "Radiation Control System" },
+            { acronym: "RCA", fullForm: "Radiation Controlled Area" },
+            { acronym: "RA", fullForm: "Radiation Area" },
+            { acronym: "HRA", fullForm: "High Radiation Area" },
+            { acronym: "VHRA", fullForm: "Very High Radiation Area" },
+            { acronym: "CWA", fullForm: "Contaminated Work Area" },
+            { acronym: "SCBA", fullForm: "Self-Contained Breathing Apparatus" },
+            { acronym: "FFP3", fullForm: "Filtering Facepiece Class 3 respirator" },
+            { acronym: "APR", fullForm: "Air-Purifying Respirator" },
+            { acronym: "PAPR", fullForm: "Powered Air-Purifying Respirator" },
+            { acronym: "ICNIRP", fullForm: "International Commission on Non-Ionizing Radiation Protection" },
+            { acronym: "OEL", fullForm: "Occupational Exposure Limit" }
+        ];
+
+        let cards = JSON.parse(JSON.stringify(flashcardsData)).sort(function() { return Math.random() - 0.5; });
+        let currentIndex = 0;
+        let viewedCards = new Set([0]);
+        let isFlipped = false;
+
+        function updateDisplay() {
+            const card = cards[currentIndex];
+            document.getElementById('acronym').textContent = card.acronym;
+            document.getElementById('fullForm').textContent = card.fullForm;
+            document.getElementById('cardCounter').textContent = 'Card ' + (currentIndex + 1) + ' of ' + cards.length;
+            document.getElementById('viewedCounter').textContent = viewedCards.size + ' viewed';
+            
+            const progress = (viewedCards.size / cards.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('nextBtn').disabled = currentIndex === cards.length - 1;
+            
+            // Reset flip state
+            isFlipped = false;
+            document.querySelector('.card-front').classList.add('active');
+            document.querySelector('.card-back').classList.remove('active');
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                document.querySelector('.card-front').classList.remove('active');
+                document.querySelector('.card-back').classList.add('active');
+            } else {
+                document.querySelector('.card-front').classList.add('active');
+                document.querySelector('.card-back').classList.remove('active');
+            }
+        }
+
+        function nextCard() {
+            if (currentIndex < cards.length - 1) {
+                currentIndex++;
+                viewedCards.add(currentIndex);
+                updateDisplay();
+            }
+        }
+
+        function previousCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateDisplay();
+            }
+        }
+
+        function shuffleCards() {
+            cards = JSON.parse(JSON.stringify(flashcardsData)).sort(function() { return Math.random() - 0.5; });
+            currentIndex = 0;
+            viewedCards = new Set([0]);
+            updateDisplay();
+        }
+
+        function resetCards() {
+            cards = JSON.parse(JSON.stringify(flashcardsData)).sort(function() { return Math.random() - 0.5; });
+            currentIndex = 0;
+            viewedCards = new Set([0]);
+            updateDisplay();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') previousCard();
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === ' ') {
+                e.preventDefault();
+                flipCard();
+            }
+        });
+
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+</html>
